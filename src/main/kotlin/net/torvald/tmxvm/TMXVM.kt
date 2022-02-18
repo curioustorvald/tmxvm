@@ -23,6 +23,11 @@ class TMXVM(instSize: Int) {
     // Internal Registers //
     var _pc = 0 // NOTE: jump instruction assumes 1 to be the first instruction, but in the VM the first instruction is 0.
 
+    var busRead0: () -> TMXWord = { 0 }
+    var busRead1: () -> TMXWord = { 0 }
+    var busWrite0: (TMXWord) -> Unit = {}
+    var busWrite1: (TMXWord) -> Unit = {}
+
     private val BRKInst = Inst(BRK)
 
     val instructions = Array(instSize) { BRKInst }
@@ -31,14 +36,6 @@ class TMXVM(instSize: Int) {
 
     fun halt() {
         finished = true
-    }
-
-    fun readBus0(): TMXWord {
-        TODO()
-    }
-
-    fun readBus1(): TMXWord {
-        TODO()
     }
 
     fun reset() {
@@ -68,6 +65,8 @@ class TMXVM(instSize: Int) {
     fun stepExec() {
         if (!finished) instructions[_pc].exec()
     }
+
+    fun printState() = "ACC:$acc\tX:$x\tY:$y\tp0:$p0\tPC:$_pc"
 
     fun Instruction.exec() {
         when (this.opcode) {
@@ -114,14 +113,18 @@ class TMXVM(instSize: Int) {
             SHR -> { acc = acc shr this.arg }
             WP0 -> { p0 = acc }
             WP1 -> { p1 = acc }
-            WB0 -> { b0 = acc }
-            WB1 -> { b1 = acc }
+            WB0 -> { b0 = acc; busWrite0(b0) }
+            WB1 -> { b1 = acc; busWrite1(b1) }
+            WP0I -> { p0 = this.arg }
+            WP1I -> { p1 = this.arg }
+            WB0I -> { b0 = this.arg; busWrite0(b0) }
+            WB1I -> { b1 = this.arg; busWrite1(b1) }
             RP0 -> { acc = p0 }
             RP1 -> { acc = p1 }
-            RB0 -> { acc = readBus0() }
-            RB1 -> { acc = readBus1() }
-            XB0 -> { readBus0() }
-            XB1 -> { readBus1() }
+            RB0 -> { acc = busRead0() }
+            RB1 -> { acc = busRead1() }
+            XB0 -> { busRead0() }
+            XB1 -> { busRead1() }
             LDX -> { x = this.arg }
             LDY -> { y = this.arg }
             LDA -> { acc = this.arg }
