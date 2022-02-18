@@ -101,7 +101,7 @@ class TMXVM(instSize: Int) {
             AND -> { acc = acc and this.arg }
             ORX -> { acc = acc or x }
             ORY -> { acc = acc or y }
-            OR -> { acc = acc or this.arg }
+            BOR -> { acc = acc or this.arg }
             XOX -> { acc = acc xor x }
             XOY -> { acc = acc xor y }
             XOR -> { acc = acc xor this.arg }

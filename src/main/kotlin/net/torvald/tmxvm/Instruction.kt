@@ -52,7 +52,7 @@ object Inst {
         instCache[AND] = Instruction(AND, 0)
         instCache[ORX] = Instruction(ORX, 0)
         instCache[ORY] = Instruction(ORY, 0)
-        instCache[OR ] = Instruction(OR , 0)
+        instCache[BOR ] = Instruction(BOR , 0)
         instCache[XOX] = Instruction(XOX, 0)
         instCache[XOY] = Instruction(XOY, 0)
         instCache[XOR] = Instruction(XOR, 0)
@@ -120,7 +120,7 @@ enum class Opcode {
     ADX, ADY, ADD, SBX, SBY, SUB,
     MUX, MUY, MUL, DVX, DVY, DIV,
     NOX, NOY, NOT,
-    ANX, ANY, AND, ORX, ORY, OR,
+    ANX, ANY, AND, ORX, ORY, BOR,
     XOX, XOY, XOR,
     SLX, SLY, SHL, SRX, SRY, SHR,
     WP0, WP1, WB0, WB1,
@@ -132,6 +132,6 @@ enum class Opcode {
 }
 
 fun Opcode.takesArg() = when (this) {
-    JPZ, JNZ, JMP, ADD, SUB, MUL, DIV, AND, OR, XOR, SHL, SHR, LDX, LDY, LDA, WP0I, WP1I, WB0I, WB1I, -> true
+    JPZ, JNZ, JMP, ADD, SUB, MUL, DIV, AND, BOR, XOR, SHL, SHR, LDX, LDY, LDA, WP0I, WP1I, WB0I, WB1I, -> true
     else -> false
 }
