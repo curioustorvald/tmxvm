@@ -17,16 +17,24 @@ class TMXVM(instSize: Int) {
     var y: TMXWord = 0
     var p0: TMXWord = 0
     var p1: TMXWord = 0
+    var p2: TMXWord = 0
+    var p3: TMXWord = 0
     var b0: TMXWord = 0
     var b1: TMXWord = 0
+    var b2: TMXWord = 0
+    var b3: TMXWord = 0
 
     // Internal Registers //
     var _pc = 0 // NOTE: jump instruction assumes 1 to be the first instruction, but in the VM the first instruction is 0.
 
     var busRead0: () -> TMXWord = { 0 }
     var busRead1: () -> TMXWord = { 0 }
+    var busRead2: () -> TMXWord = { 0 }
+    var busRead3: () -> TMXWord = { 0 }
     var busWrite0: (TMXWord) -> Unit = {}
     var busWrite1: (TMXWord) -> Unit = {}
+    var busWrite2: (TMXWord) -> Unit = {}
+    var busWrite3: (TMXWord) -> Unit = {}
 
     private val BRKInst = Inst(BRK)
 
@@ -44,8 +52,12 @@ class TMXVM(instSize: Int) {
         y = 0
         p0 = 0
         p1 = 0
+        p2 = 0
+        p3 = 0
         b0 = 0
         b1 = 0
+        b2 = 0
+        b3 = 0
         _pc = 0
         finished = false
     }
@@ -113,18 +125,32 @@ class TMXVM(instSize: Int) {
             SHR -> { acc = acc shr this.arg }
             WP0 -> { p0 = acc }
             WP1 -> { p1 = acc }
+            WP2 -> { p2 = acc }
+            WP3 -> { p3 = acc }
             WB0 -> { b0 = acc; busWrite0(b0) }
             WB1 -> { b1 = acc; busWrite1(b1) }
+            WB2 -> { b2 = acc; busWrite2(b2) }
+            WB3 -> { b3 = acc; busWrite3(b3) }
             WP0I -> { p0 = this.arg }
             WP1I -> { p1 = this.arg }
+            WP2I -> { p2 = this.arg }
+            WP3I -> { p3 = this.arg }
             WB0I -> { b0 = this.arg; busWrite0(b0) }
             WB1I -> { b1 = this.arg; busWrite1(b1) }
+            WB2I -> { b2 = this.arg; busWrite2(b2) }
+            WB3I -> { b3 = this.arg; busWrite3(b3) }
             RP0 -> { acc = p0 }
             RP1 -> { acc = p1 }
+            RP2 -> { acc = p2 }
+            RP3 -> { acc = p3 }
             RB0 -> { acc = busRead0() }
             RB1 -> { acc = busRead1() }
+            RB2 -> { acc = busRead2() }
+            RB3 -> { acc = busRead3() }
             XB0 -> { busRead0() }
             XB1 -> { busRead1() }
+            XB2 -> { busRead2() }
+            XB3 -> { busRead3() }
             LDX -> { x = this.arg }
             LDY -> { y = this.arg }
             LDA -> { acc = this.arg }
